@@ -3,7 +3,6 @@ import OrderBook from "./OrderBook";
 import Chart from "./Chart";
 import "./App.css";
 
-
 const options = [
   { value: "BTC-USD", label: "BTC-USD" },
   { value: "ETH-USD", label: "ETH-USD" },
@@ -112,7 +111,9 @@ const App = () => {
 
   const loadOrderBook = async (pair) => {
     try {
-      const response = await fetch(`https://api.pro.coinbase.com/products/${pair}/book?level=2`);
+      const response = await fetch(
+        `https://api.pro.coinbase.com/products/${pair}/book?level=2`
+      );
       const data = await response.json();
       setBids(data.bids || []);
       setAsks(data.asks || []);
@@ -141,17 +142,20 @@ const App = () => {
   return (
     <div className="container">
       <div className="canvas-container">
-        <div className="custom-select">
-          <select value={pair} onChange={(e) => optionClick(e.target.value)}>
-            <option key={"Select"} value={"Select"}>
-              {"Select Pair"}
-            </option>
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
+        <div className="header">
+          <div className="custom-select">
+            <select value={pair} onChange={(e) => optionClick(e.target.value)}>
+              <option key={"Select"} value={"Select"}>
+                {"Select Pair"}
               </option>
-            ))}
-          </select>
+              {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <h2 className="header-title">CoinRoutes Test</h2>
         </div>
         {pair !== "Select" && (
           <div className="detail-container">
@@ -183,9 +187,19 @@ const App = () => {
             </div>
           </div>
         )}
-        {pair !== "Select" ? loading ? "Loading..." : <Chart buf={buf} /> : <></>}
+        {pair !== "Select" ? (
+          loading ? (
+            "Loading..."
+          ) : (
+            <Chart buf={buf} />
+          )
+        ) : (
+          <></>
+        )}
       </div>
-      {pair !== "Select" && bids?.length > 0 && asks?.length > 0 && <OrderBook bids={bids} asks={asks} />}
+      {pair !== "Select" && bids?.length > 0 && asks?.length > 0 && (
+        <OrderBook bids={bids} asks={asks} />
+      )}
     </div>
   );
 };
