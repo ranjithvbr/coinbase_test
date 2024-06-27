@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 
+const options = [
+  { label: 0.1, value: 0.1 },
+  { label: 0.5, value: 0.5 },
+  { label: 1, value: 1 },
+];
+
 export default function OrderBook({ bids = [], asks = [] }) {
+  const [aggregation, setAggregation] = useState(0.1);
+
+  const handleAggregationChange = (e) => {
+    setAggregation(parseFloat(e.target.value));
+  };
+
+  const filteredBids = bids.filter(bid => bid[0] % aggregation === 0);
+  const filteredAsks = asks.filter(ask => ask[0] % aggregation === 0);
+
   return (
     <div className="order-book">
       <h3 className="order-book-title">Order Book</h3>
@@ -15,7 +30,7 @@ export default function OrderBook({ bids = [], asks = [] }) {
             </tr>
           </thead>
           <tbody>
-            {bids.slice(0, 15).map((bid, index) => (
+            {filteredBids.slice(0, 10).map((bid, index) => (
               <tr key={index}>
                 <td>{bid[0]}</td>
                 <td>{bid[1]}</td>
@@ -34,7 +49,7 @@ export default function OrderBook({ bids = [], asks = [] }) {
             </tr>
           </thead>
           <tbody>
-            {asks.slice(0, 15).map((ask, index) => (
+            {filteredAsks.slice(0, 10).map((ask, index) => (
               <tr key={index}>
                 <td>{ask[0]}</td>
                 <td>{ask[1]}</td>
@@ -42,6 +57,16 @@ export default function OrderBook({ bids = [], asks = [] }) {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="select-aggregation">
+        <h4>Aggrecation</h4>
+        <select value={aggregation} onChange={handleAggregationChange}>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
     </div>
   );
